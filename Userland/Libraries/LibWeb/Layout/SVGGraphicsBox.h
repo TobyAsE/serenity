@@ -19,6 +19,9 @@ public:
 
     SVG::SVGGraphicsElement& dom_node() { return verify_cast<SVG::SVGGraphicsElement>(SVGBox::dom_node()); }
 
+    float viewbox_scaling();
+    Gfx::FloatPoint viewbox_origin();
+
     virtual void before_children_paint(PaintContext& context, PaintPhase phase) override;
 };
 

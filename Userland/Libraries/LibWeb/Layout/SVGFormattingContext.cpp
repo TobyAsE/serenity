@@ -26,20 +26,30 @@ void SVGFormattingContext::run(Box& box, LayoutMode)
     //        It works by computing the united bounding box of all <path>'s
     //        within an <svg>, and using that as the size of this box.
 
-    Gfx::FloatRect total_bounding_box;
+    Gfx::FloatRect total_bounding_box {};
 
-    box.for_each_in_subtree_of_type<SVGBox>([&](auto& descendant) {
-        if (is<SVGPathBox>(descendant)) {
-            auto& path_box = static_cast<SVGPathBox&>(descendant);
-            auto& path = path_box.dom_node().get_path();
-            path_box.set_size(path.bounding_box().size());
+    auto* svg_element = static_cast<SVG::SVGSVGElement*>(box.dom_node());
+    if (!svg_element->has_attribute(HTML::AttributeNames::width) || !svg_element->has_attribute(HTML::AttributeNames::height)) {
+        box.for_each_in_subtree_of_type<SVGBox>([&](auto& descendant) {
+            if (is<SVGPathBox>(descendant)) {
+                auto& path_box = static_cast<SVGPathBox&>(descendant);
+                auto& path = path_box.dom_node().get_path();
+                path_box.set_size(path.bounding_box().size());
 
-            total_bounding_box = total_bounding_box.united(path.bounding_box());
-        }
+                total_bounding_box = total_bounding_box.united(path.bounding_box());
+            }
 
-        return IterationDecision::Continue;
-    });
+            return IterationDecision::Continue;
+        });
+    }
 
+    if (svg_element->has_attribute(HTML::AttributeNames::width))
+        total_bounding_box.set_width(svg_element->width());
+
+    if (svg_element->has_attribute(HTML::AttributeNames::height))
+        total_bounding_box.set_height(svg_element->height());
+
+    dbgln("bounding box: {}", total_bounding_box.size());
     box.set_size(total_bounding_box.size());
 }
 

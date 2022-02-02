@@ -8,6 +8,7 @@
 #include <LibWeb/CSS/StyleComputer.h>
 #include <LibWeb/DOM/Document.h>
 #include <LibWeb/DOM/Event.h>
+#include <LibWeb/DOM/HTMLCollection.h>
 #include <LibWeb/Layout/SVGSVGBox.h>
 #include <LibWeb/SVG/AttributeNames.h>
 #include <LibWeb/SVG/SVGSVGElement.h>
